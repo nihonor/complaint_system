@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  AGENCY_OFFICIAL
+  ADMIN
+}
+
+enum ComplaintStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  REJECTED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String?
+  email         String      @unique
+  password      String
+  role          UserRole    @default(USER)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  complaints    Complaint[]
+  responses     Response[]
+}
+
+model Category {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  complaints  Complaint[]
+}
+
+model Agency {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  complaints  Complaint[]
+}
+
+model Complaint {
+  id          String          @id @default(cuid())
+  title       String
+  description String
+  status      ComplaintStatus @default(SUBMITTED)
+  priority    Priority        @default(MEDIUM)
+  location    String?
+  attachments Json?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  userId      String
+  categoryId  String
+  agencyId    String
+  user        User            @relation(fields: [userId], references: [id])
+  category    Category        @relation(fields: [categoryId], references: [id])
+  agency      Agency          @relation(fields: [agencyId], references: [id])
+  responses   Response[]
+}
+
+model Response {
+  id          String    @id @default(cuid())
+  content     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  complaintId String
+  user        User      @relation(fields: [userId], references: [id])
+  complaint   Complaint @relation(fields: [complaintId], references: [id])
+}
