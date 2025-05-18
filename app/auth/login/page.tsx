@@ -40,7 +40,7 @@ const LoginPage = () => {
     switch (role) {
       case "admin":
         return "/admini";
-      case "agency":
+      case "agency_official":
         return "/agencyi";
       case "user":
         return "/dashboard";

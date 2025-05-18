@@ -30,30 +30,37 @@ export async function POST(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
+
+    if (!session || session.user.role !== "AGENCY_OFFICIAL") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { content } = await request.json();
+
+    if (!content || typeof content !== "string" || content.trim().length === 0) {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
+        { error: "Response content is required" },
+        { status: 400 }
       );
     }
 
-    const user = session.user as SessionUser;
+    // Find the agency by the user's name
+    const agency = await prisma.agency.findFirst({
+      where: {
+        name: session.user.name || "",
+      },
+    });
 
-    // Check if user is an agency official
-    if (user.role !== "AGENCY_OFFICIAL") {
-      return NextResponse.json(
-        { error: "Only agency officials can respond to complaints" },
-        { status: 403 }
-      );
+    if (!agency) {
+      return NextResponse.json({ error: "Agency not found" }, { status: 404 });
     }
 
-    const body = await request.json();
-    const validatedData = responseSchema.parse(body);
-
-    // Check if the complaint exists and belongs to the user's agency
+    // Verify the complaint exists and belongs to this agency
     const complaint = await prisma.complaint.findUnique({
-      where: { id: params.id },
-      include: { agency: true },
+      where: {
+        id: params.id,
+        agencyId: agency.id,
+      },
     });
 
     if (!complaint) {
@@ -63,38 +70,25 @@ export async function POST(
       );
     }
 
-    // Create the response and update the complaint status
-    const [response] = await prisma.$transaction([
-      prisma.response.create({
-        data: {
-          content: validatedData.content,
-          complaintId: params.id,
-          userId: user.id,
-        },
-        include: {
-          user: {
-            select: {
-              name: true,
-              role: true,
-            },
+    // Create the response
+    const response = await prisma.response.create({
+      data: {
+        content: content.trim(),
+        userId: session.user.id,
+        complaintId: params.id,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            role: true,
           },
         },
-      }),
-      prisma.complaint.update({
-        where: { id: params.id },
-        data: { status: validatedData.status },
-      }),
-    ]);
+      },
+    });
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, { status: 201 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid request data", details: error.errors },
-        { status: 400 }
-      );
-    }
-
     console.error("Error creating response:", error);
     return NextResponse.json(
       { error: "Internal server error" },

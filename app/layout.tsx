@@ -41,8 +41,8 @@ export default function RootLayout({
           <Theme accentColor="violet">
             <AuthProvider>
               <NavBar />
-              <main className="m-5">
-                <Container> {children}</Container>
+              <main>
+                 {children}
               </main>
             </AuthProvider>
           </Theme>

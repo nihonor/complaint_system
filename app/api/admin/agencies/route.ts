@@ -71,22 +71,23 @@ export async function POST(request: Request) {
 
     // Create agency in both User and Agency tables
     const agency = await prisma.$transaction(async (tx) => {
-      // First create the user
+      // First create the agency record
+      const agencyRecord = await tx.agency.create({
+        data: {
+          name,
+          description: description || null,
+        },
+      });
+
+      // Then create the user with the agency ID
       const user = await tx.user.create({
         data: {
           name,
           email,
           password: hashedPassword,
           role: "AGENCY_OFFICIAL",
-        },
-      });
-
-      // Then create the agency record
-      const agencyRecord = await tx.agency.create({
-        data: {
-          name,
-          description: description || null,
-        },
+          agencyId: agencyRecord.id
+        } as any,
       });
 
       return {

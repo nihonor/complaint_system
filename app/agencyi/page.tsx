@@ -92,7 +92,7 @@ export default function AgencyDashboard() {
                     </div>
                     <button
                       onClick={() =>
-                        router.push(`/agency/complaints/${complaint.id}`)
+                        router.push(`/agencyi/complaints/${complaint.id}`)
                       }
                       className="text-indigo-600 hover:text-indigo-900"
                     >

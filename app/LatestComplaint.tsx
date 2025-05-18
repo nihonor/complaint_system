@@ -1,11 +1,12 @@
 import prisma from "@/prisma/client";
 import { Avatar, Flex, Table } from "@radix-ui/themes";
 import React from "react";
-import { IssueStatus } from "../components";
+
 import Link from "next/link";
 import { start } from "repl";
+import ComplaintStatus from "./components/ComplaintStatus";
 
-const LatestIssue = async () => {
+const LatestComplaint = async () => {
   const complaints = await prisma.complaint.findMany({
     orderBy: { createdAt: "desc" },
   });
@@ -19,7 +20,7 @@ const LatestIssue = async () => {
                 <Flex justify={"between"}>
                   <Flex direction="column" align="start" gap="2">
                     <Link href={`/complaint/${complaint.id}`}>{complaint.title}</Link>
-                    <IssueStatus status={complaint.status} />
+                    <ComplaintStatus status={complaint.status} />
                   </Flex>
                 </Flex>
               </Table.Cell>
@@ -31,4 +32,4 @@ const LatestIssue = async () => {
   );
 };
 
-export default LatestIssue;
+export default LatestComplaint;

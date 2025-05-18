@@ -35,7 +35,7 @@ const NavBar = () => {
     switch (session.user.role.toLowerCase()) {
       case "admin":
         return "/admin/dashboard";
-      case "agency":
+      case "agency_official":
         return "/agency/dashboard";
       case "user":
         return "/user/dashboard";
@@ -103,12 +103,8 @@ const NavBar = () => {
                 Log in
               </Link>
             )} */}
-            {session&& (
-              <Link href="/api/auth/signout">Logout</Link>
-            )}
-            {!session&& (
-              <Link href="/api/auth/signin">Login</Link>
-            )}
+            {session && <Link href="/api/auth/signout">Logout</Link>}
+            {!session && <Link href="/api/auth/signin">Login</Link>}
           </Box>
         </Flex>
       </Container>
