@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Complaint Management System
 
-## Getting Started
+A modern web application for submitting, tracking, and managing complaints. Features user and admin dashboards, authentication, agency/category management, and more.
 
-First, run the development server:
+---
+
+## 🚀 Getting Started
+
+### 1. **Clone the Repository**
+
+```bash
+git clone https://github.com/nihonor/complaint_system
+cd complaint_system
+```
+
+### 2. **Install Dependencies**
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. **Set Up Environment Variables**
+
+- Copy the example environment file and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+- Edit `.env` to set up your database URL and authentication secrets (e.g., for NextAuth, Prisma, etc).
+
+### 4. **Set Up the Database**
+
+- Run Prisma migrations to set up your database schema:
+
+```bash
+npx prisma migrate dev
+```
+
+- (Optional) Seed the database if a seed script is provided:
+
+```bash
+npx prisma db seed
+```
+
+### 5. **Start the Development Server**
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Features
 
-## Learn More
+- **User Authentication** (NextAuth): Sign up, log in, and secure access to features.
+- **User Dashboard:**
+  - View complaint stats (submitted, in progress, resolved)
+  - See recent complaints and their statuses
+  - Submit new complaints
+- **Admin Dashboard:**
+  - Overview of all complaints, agencies, categories, and users
+  - Visual stats and charts
+  - Manage agencies and categories (add, delete)
+  - View and respond to complaints
+- **Complaint Management:**
+  - Submit complaints with title, description, category, agency, location, and priority
+  - Track complaint status and responses
+- **Agency & Category Management:**
+  - Admins can add, view, and delete agencies and categories
+- **Role-Based Access:**
+  - Only admins can access admin features
+  - Users can only see and manage their own complaints
+- **Modern UI:**
+  - Responsive, accessible, and visually appealing design
+  - Loading skeletons and error handling
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js (App Router)
+- React
+- NextAuth (authentication)
+- Prisma (ORM)
+- PostgreSQL (or your preferred database)
+- Tailwind CSS & Radix UI (styling)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📝 Customization & Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Update `.env` for your production database and secrets
+- Build for production:
+
+```bash
+npm run build
+npm start
+```
+
+- Deploy to Vercel, Netlify, or your preferred platform
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE)

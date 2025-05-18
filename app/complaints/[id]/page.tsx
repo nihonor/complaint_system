@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ComplaintStatus from "@/app/components/ComplaintStatus";
@@ -37,8 +37,9 @@ interface Complaint {
 export default function ComplaintDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = use(params);
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const [complaint, setComplaint] = useState<Complaint | null>(null);
@@ -51,14 +52,14 @@ export default function ComplaintDetailsPage({
     } else if (sessionStatus === "unauthenticated") {
       router.push("/auth/login");
     }
-  }, [sessionStatus, params.id]);
+  }, [sessionStatus, id]);
 
   const fetchComplaint = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/complaints/${params.id}`);
+      const response = await fetch(`/api/complaints/${id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch complaint details");
       }
